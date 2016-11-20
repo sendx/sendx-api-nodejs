@@ -1,9 +1,9 @@
-# SendXApi.TagAddUpdate
+# SendXRestApi.TrackResponse
 
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**name** | **String** |  | [optional] 
-**teamId** | **Integer** |  | [optional] 
+**status** | **String** |  | [optional] 
+**message** | **String** |  | [optional] 
 
 

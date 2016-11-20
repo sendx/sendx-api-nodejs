@@ -1,6 +1,6 @@
 /**
- * SendX API
- * SendX is built on the simple tenet that users must have open access to their data. SendX API is the first step in that direction. To cite some examples:   - subscribe / unsubscribe a contact from a list   - Schedule campaign to a segment of users   - Trigger transactional emails   - Get / PUT / POST and DELETE operations on team, campaign, list, contact, report etc. and so on.  As companies grow big, custom use cases around email marketing also crop up. SendX API ensures   that SendX platform is able to satisfy such unforeseen use cases. They may range from building     custom reporting dashboard to tagging contacts with custom attributes or triggering emails based on recommendation algorithm.  We do our best to have all our URLs be [RESTful](http://en.wikipedia.org/wiki/Representational_state_transfer). Every endpoint (URL) may support one of four different http verbs. GET requests fetch information about an object, POST requests create objects, PUT requests update objects, and finally DELETE requests will delete objects.  Also all API calls besides:   - Subscribe / unsubscribe signup form  required **api_key** to be passed as **header**   ### The Envelope Every response is contained by an envelope. That is, each response has a predictable set of keys with which you can expect to interact: ```json {     \"status\": \"200\",      \"message\": \"OK\",     \"data\"\": [        {          ...        },        .        .        .     ] } ```  #### Status  The status key is used to communicate extra information about the response to the developer. If all goes well, you'll only ever see a code key with value 200. However, sometimes things go wrong, and in that case you might see a response like: ```json {     \"status\": \"404\" } ```  #### Data  The data key is the meat of the response. It may be a list containing single object or multiple objects  #### Message  This returns back human readable message. This is specially useful to make sense in case of error scenarios. 
+ * SendX REST API
+ * SendX REST API has two methods:    * Identify   * Track      ## Identify API Method      Identify API Method is used to attach data to a visitor. If a contact is not yet created then we will create the contact. In case contact already exists then we update it.      **Example Request:**       ```json       {         email: \"john.doe@gmail.com\",           firstName: \"John\",         lastName: \"Doe\",         birthday: \"1989-03-03\",         customFields: {            \"Designation\": \"Software Engineer\",           \"Age\": \"27\",            \"Experience\": \"5\"         },           tags: [\"Developer\", \"API Team\"],        }   ```         Note that tags are an array of strings. In case they don't exist previously then API will create them and associate them with the contact.      Similarly if a custom field doesn't exist then it is first created and then associated with the contact along-with the corresponding value. In case custom field exists already then we simply update the value of it for the aforementioned contact.      We don't delete any of the properties based on identify call. What this means is that if for the same contact you did two API calls like:         **API Call A**        ```json       {         email: \"john.doe@gmail.com\",          firstName: \"John\",         birthday: \"1989-03-03\",         customFields: {            \"Designation\": \"Software Engineer\"         },           tags: [\"Developer\"],        }   ```         **API Call B**       ```json       {           email: \"john.doe@gmail.com\",           customFields: {            \"Age\": \"29\"         },           tags: [\"API Team\"],        }   ```         Then the final contact will have firstName as **John**, birthday as **1989-03-03** present. Also both tags **Developer** and **API Team** shall be present along with custom fields **Designation** and **Age**.         **Properties:**      * **firstName**: type string   * **lastName**: type string   * **email**: type string     * **company**: type string     * **birthday**: type string with format **YYYY-MM-DD** eg: 2016-11-21     * **customFields**: type map[string]string      * **tags**: type array of string          **Response:**       ```json       {           \"status\": \"200\",         \"message\": \"OK\",         \"data\": {           \"encryptedTeamId\": \"CLdh9Ig5GLIN1u8gTRvoja\",           \"encryptedId\": \"c9QF63nrBenCaAXe660byz\",           \"tags\": [             \"API Team\",             \"Tech\"           ],           \"firstName\": \"John\",           \"lastName\": \"Doe\",           \"email\": \"john.doe@gmail.com\",           \"company\": \"\",           \"birthday\": \"1989-03-03\",           \"customFields\": {             \"Age\": \"29\",             \"Designation\": \"Software Engineer\"           }           }        }     ```         ## Track API Method         Track API Method is used to associate **tags** with a contact. You can have automation rules based on tag addition and they will get executed. For eg:      * **On user registration** tag start onboarding drip for him / her.   * **Account Upgrade** tag start add user to paid user list and start account expansion drip.       **Response:**       ```json       {         \"status\": \"200\",         \"message\": \"OK\",         \"data\": \"success\"      }   ``` 
  *
  * OpenAPI spec version: v1
  * 
@@ -25,23 +25,23 @@
 (function(factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['ApiClient', 'model/Campaign', 'model/CampaignAddUpdate', 'model/Contact', 'model/ContactAddUpdate', 'model/DeepListEmailContact', 'model/DeepTeamEmailContact', 'model/EContent', 'model/EMessage', 'model/Email', 'model/InlineResponse200', 'model/InlineResponse2001', 'model/InlineResponse20010', 'model/InlineResponse20011', 'model/InlineResponse20012', 'model/InlineResponse20013', 'model/InlineResponse2002', 'model/InlineResponse2003', 'model/InlineResponse2004', 'model/InlineResponse2005', 'model/InlineResponse2006', 'model/InlineResponse2007', 'model/InlineResponse2008', 'model/InlineResponse2009', 'model/Link', 'model/LinkAddUpdate', 'model/List', 'model/ListAddUpdate', 'model/Tag', 'model/TagAddUpdate', 'model/TagContact', 'model/TagContactId', 'model/Team', 'model/TeamAddUpdate', 'api/CampaignApi', 'api/ContactApi', 'api/LinkApi', 'api/ListApi', 'api/SendApi', 'api/SubscribeApi', 'api/TagApi', 'api/TeamApi', 'api/UnsubscribeApi'], factory);
+    define(['ApiClient', 'model/Contact', 'model/ContactResponse', 'model/TrackResponse', 'api/ContactApi'], factory);
   } else if (typeof module === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(require('./ApiClient'), require('./model/Campaign'), require('./model/CampaignAddUpdate'), require('./model/Contact'), require('./model/ContactAddUpdate'), require('./model/DeepListEmailContact'), require('./model/DeepTeamEmailContact'), require('./model/EContent'), require('./model/EMessage'), require('./model/Email'), require('./model/InlineResponse200'), require('./model/InlineResponse2001'), require('./model/InlineResponse20010'), require('./model/InlineResponse20011'), require('./model/InlineResponse20012'), require('./model/InlineResponse20013'), require('./model/InlineResponse2002'), require('./model/InlineResponse2003'), require('./model/InlineResponse2004'), require('./model/InlineResponse2005'), require('./model/InlineResponse2006'), require('./model/InlineResponse2007'), require('./model/InlineResponse2008'), require('./model/InlineResponse2009'), require('./model/Link'), require('./model/LinkAddUpdate'), require('./model/List'), require('./model/ListAddUpdate'), require('./model/Tag'), require('./model/TagAddUpdate'), require('./model/TagContact'), require('./model/TagContactId'), require('./model/Team'), require('./model/TeamAddUpdate'), require('./api/CampaignApi'), require('./api/ContactApi'), require('./api/LinkApi'), require('./api/ListApi'), require('./api/SendApi'), require('./api/SubscribeApi'), require('./api/TagApi'), require('./api/TeamApi'), require('./api/UnsubscribeApi'));
+    module.exports = factory(require('./ApiClient'), require('./model/Contact'), require('./model/ContactResponse'), require('./model/TrackResponse'), require('./api/ContactApi'));
   }
-}(function(ApiClient, Campaign, CampaignAddUpdate, Contact, ContactAddUpdate, DeepListEmailContact, DeepTeamEmailContact, EContent, EMessage, Email, InlineResponse200, InlineResponse2001, InlineResponse20010, InlineResponse20011, InlineResponse20012, InlineResponse20013, InlineResponse2002, InlineResponse2003, InlineResponse2004, InlineResponse2005, InlineResponse2006, InlineResponse2007, InlineResponse2008, InlineResponse2009, Link, LinkAddUpdate, List, ListAddUpdate, Tag, TagAddUpdate, TagContact, TagContactId, Team, TeamAddUpdate, CampaignApi, ContactApi, LinkApi, ListApi, SendApi, SubscribeApi, TagApi, TeamApi, UnsubscribeApi) {
+}(function(ApiClient, Contact, ContactResponse, TrackResponse, ContactApi) {
   'use strict';
 
   /**
-   * SendX_is_built_on_the_simple_tenet_that_users_must_have_open_access_to_their_data__SendX_API_is_the_first_step_in_that_direction__To_cite_some_examples____subscribe__unsubscribe_a_contact_from_a_list____Schedule_campaign_to_a_segment_of_users____Trigger_transactional_emails____Get__PUT__POST_and_DELETE_operations_on_team_campaign_list_contact_report_etc_and_so_on_As_companies_grow_big_custom_use_cases_around_email_marketing_also_crop_up__SendX_API_ensures__that_SendX_platform_is_able_to_satisfy_such_unforeseen_use_cases__They_may_range_from_building____custom_reporting_dashboard_to_tagging_contacts_with_custom_attributes_or_triggeringemails_based_on_recommendation_algorithm_We_do_our_best_to_have_all_our_URLs_be_RESTful_httpen_wikipedia_orgwikiRepresentational_state_transfer_Every_endpoint__URL_may_support_one_of_four_different_http_verbs__GETrequests_fetch_information_about_an_object_POST_requests_create_objectsPUT_requests_update_objects_and_finally_DELETE_requests_will_deleteobjects_Also_all_API_calls_besides____Subscribe__unsubscribe_signup_form_required_api_key_to_be_passed_as_header_The_EnvelopeEvery_response_is_contained_by_an_envelope__That_is_each_response_has_apredictable_set_of_keys_with_which_you_can_expect_to_interactjson____status_200_____message_OK____data_________________________________________________________Status_The_status_key_is_used_to_communicate_extra_information_about_the_response_tothe_developer__If_all_goes_well_youll_only_ever_see_a_code_key_with_value200__However_sometimes_things_go_wrong_and_in_that_case_you_might_see_aresponse_likejson____status_404_Data_The_data_key_is_the_meat_of_the_response__It_may_be_a_list_containing_single_objector_multiple_objects_Message_This_returns_back_human_readable_message__This_is_specially_useful_to_make_sense_in_caseof_error_scenarios_.<br>
+   * SendX_REST_API_has_two_methods___Identify___Track_____Identify_API_Method____Identify_API_Method_is_used_to_attach_data_to_a_visitor__If_a_contact_is_not_yet_created_then_we_will_create_the_contact__In_case_contact_already_exists_then_we_update_it_____Example_Request____json______________email_john_doegmail_com__________firstName_John________lastName_Doe________birthday_1989_03_03________customFields____________Designation_Software_Engineer__________Age_27___________Experience_5__________________tags__Developer_API_Team_______________Note_that_tags_are_an_array_of_strings__In_case_they_dont_exist_previously_then_API_will_create_them_and_associate_them_with_the_contact_____Similarly_if_a_custom_field_doesnt_exist_then_it_is_first_created_and_then_associated_with_the_contact_along_with_the_corresponding_value__In_case_custom_field_exists_already_then_we_simply_update_the_value_of_it_for_the_aforementioned_contact_____We_dont_delete_any_of_the_properties_based_on_identify_call__What_this_means_is_that_if_for_the_same_contact_you_did_two_API_calls_like______API_Call_A_____json______________email_john_doegmail_com_________firstName_John________birthday_1989_03_03________customFields____________Designation_Software_Engineer__________________tags__Developer_______________API_Call_B____json________________email_john_doegmail_com__________customFields____________Age_29__________________tags__API_Team_______________Then_the_final_contact_will_have_firstName_as_John_birthday_as_1989_03_03_present__Also_both_tags_Developer_and_API_Team_shall_be_present_along_with_custom_fields_Designation_and_Age_______Properties_____firstName_type_string___lastName_type_string___email_type_string_____company_type_string_____birthday_type_string_with_format_YYYY_MM_DD_eg_2016_11_21_____customFields_type_map_stringstring______tags_type_array_of_string_______Response____json________________status_200________message_OK________data___________encryptedTeamId_CLdh9Ig5GLIN1u8gTRvoja__________encryptedId_c9QF63nrBenCaAXe660byz__________tags______________API_Team____________Tech____________________firstName_John__________lastName_Doe__________email_john_doegmail_com__________company___________birthday_1989_03_03__________customFields_____________Age_29____________Designation_Software_Engineer______________________________________Track_API_Method______Track_API_Method_is_used_to_associate_tags_with_a_contact__You_can_have_automation_rules_based_on_tag_addition_and_they_will_get_executed__For_eg_____On_user_registration_tag_start_onboarding_drip_for_him__her____Account_Upgrade_tag_start_add_user_to_paid_user_list_and_start_account_expansion_drip______Response____json______________status_200________message_OK________data_success_______.<br>
    * The <code>index</code> module provides access to constructors for all the classes which comprise the public API.
    * <p>
    * An AMD (recommended!) or CommonJS application will generally do something equivalent to the following:
    * <pre>
-   * var SendXApi = require('index'); // See note below*.
-   * var xxxSvc = new SendXApi.XxxApi(); // Allocate the API class we're going to use.
-   * var yyyModel = new SendXApi.Yyy(); // Construct a model instance.
+   * var SendXRestApi = require('index'); // See note below*.
+   * var xxxSvc = new SendXRestApi.XxxApi(); // Allocate the API class we're going to use.
+   * var yyyModel = new SendXRestApi.Yyy(); // Construct a model instance.
    * yyyModel.someProperty = 'someValue';
    * ...
    * var zzz = xxxSvc.doSomething(yyyModel); // Invoke the service.
@@ -53,8 +53,8 @@
    * <p>
    * A non-AMD browser application (discouraged) might do something like this:
    * <pre>
-   * var xxxSvc = new SendXApi.XxxApi(); // Allocate the API class we're going to use.
-   * var yyy = new SendXApi.Yyy(); // Construct a model instance.
+   * var xxxSvc = new SendXRestApi.XxxApi(); // Allocate the API class we're going to use.
+   * var yyy = new SendXRestApi.Yyy(); // Construct a model instance.
    * yyyModel.someProperty = 'someValue';
    * ...
    * var zzz = xxxSvc.doSomething(yyyModel); // Invoke the service.
@@ -71,215 +71,25 @@
      */
     ApiClient: ApiClient,
     /**
-     * The Campaign model constructor.
-     * @property {module:model/Campaign}
-     */
-    Campaign: Campaign,
-    /**
-     * The CampaignAddUpdate model constructor.
-     * @property {module:model/CampaignAddUpdate}
-     */
-    CampaignAddUpdate: CampaignAddUpdate,
-    /**
      * The Contact model constructor.
      * @property {module:model/Contact}
      */
     Contact: Contact,
     /**
-     * The ContactAddUpdate model constructor.
-     * @property {module:model/ContactAddUpdate}
+     * The ContactResponse model constructor.
+     * @property {module:model/ContactResponse}
      */
-    ContactAddUpdate: ContactAddUpdate,
+    ContactResponse: ContactResponse,
     /**
-     * The DeepListEmailContact model constructor.
-     * @property {module:model/DeepListEmailContact}
+     * The TrackResponse model constructor.
+     * @property {module:model/TrackResponse}
      */
-    DeepListEmailContact: DeepListEmailContact,
-    /**
-     * The DeepTeamEmailContact model constructor.
-     * @property {module:model/DeepTeamEmailContact}
-     */
-    DeepTeamEmailContact: DeepTeamEmailContact,
-    /**
-     * The EContent model constructor.
-     * @property {module:model/EContent}
-     */
-    EContent: EContent,
-    /**
-     * The EMessage model constructor.
-     * @property {module:model/EMessage}
-     */
-    EMessage: EMessage,
-    /**
-     * The Email model constructor.
-     * @property {module:model/Email}
-     */
-    Email: Email,
-    /**
-     * The InlineResponse200 model constructor.
-     * @property {module:model/InlineResponse200}
-     */
-    InlineResponse200: InlineResponse200,
-    /**
-     * The InlineResponse2001 model constructor.
-     * @property {module:model/InlineResponse2001}
-     */
-    InlineResponse2001: InlineResponse2001,
-    /**
-     * The InlineResponse20010 model constructor.
-     * @property {module:model/InlineResponse20010}
-     */
-    InlineResponse20010: InlineResponse20010,
-    /**
-     * The InlineResponse20011 model constructor.
-     * @property {module:model/InlineResponse20011}
-     */
-    InlineResponse20011: InlineResponse20011,
-    /**
-     * The InlineResponse20012 model constructor.
-     * @property {module:model/InlineResponse20012}
-     */
-    InlineResponse20012: InlineResponse20012,
-    /**
-     * The InlineResponse20013 model constructor.
-     * @property {module:model/InlineResponse20013}
-     */
-    InlineResponse20013: InlineResponse20013,
-    /**
-     * The InlineResponse2002 model constructor.
-     * @property {module:model/InlineResponse2002}
-     */
-    InlineResponse2002: InlineResponse2002,
-    /**
-     * The InlineResponse2003 model constructor.
-     * @property {module:model/InlineResponse2003}
-     */
-    InlineResponse2003: InlineResponse2003,
-    /**
-     * The InlineResponse2004 model constructor.
-     * @property {module:model/InlineResponse2004}
-     */
-    InlineResponse2004: InlineResponse2004,
-    /**
-     * The InlineResponse2005 model constructor.
-     * @property {module:model/InlineResponse2005}
-     */
-    InlineResponse2005: InlineResponse2005,
-    /**
-     * The InlineResponse2006 model constructor.
-     * @property {module:model/InlineResponse2006}
-     */
-    InlineResponse2006: InlineResponse2006,
-    /**
-     * The InlineResponse2007 model constructor.
-     * @property {module:model/InlineResponse2007}
-     */
-    InlineResponse2007: InlineResponse2007,
-    /**
-     * The InlineResponse2008 model constructor.
-     * @property {module:model/InlineResponse2008}
-     */
-    InlineResponse2008: InlineResponse2008,
-    /**
-     * The InlineResponse2009 model constructor.
-     * @property {module:model/InlineResponse2009}
-     */
-    InlineResponse2009: InlineResponse2009,
-    /**
-     * The Link model constructor.
-     * @property {module:model/Link}
-     */
-    Link: Link,
-    /**
-     * The LinkAddUpdate model constructor.
-     * @property {module:model/LinkAddUpdate}
-     */
-    LinkAddUpdate: LinkAddUpdate,
-    /**
-     * The List model constructor.
-     * @property {module:model/List}
-     */
-    List: List,
-    /**
-     * The ListAddUpdate model constructor.
-     * @property {module:model/ListAddUpdate}
-     */
-    ListAddUpdate: ListAddUpdate,
-    /**
-     * The Tag model constructor.
-     * @property {module:model/Tag}
-     */
-    Tag: Tag,
-    /**
-     * The TagAddUpdate model constructor.
-     * @property {module:model/TagAddUpdate}
-     */
-    TagAddUpdate: TagAddUpdate,
-    /**
-     * The TagContact model constructor.
-     * @property {module:model/TagContact}
-     */
-    TagContact: TagContact,
-    /**
-     * The TagContactId model constructor.
-     * @property {module:model/TagContactId}
-     */
-    TagContactId: TagContactId,
-    /**
-     * The Team model constructor.
-     * @property {module:model/Team}
-     */
-    Team: Team,
-    /**
-     * The TeamAddUpdate model constructor.
-     * @property {module:model/TeamAddUpdate}
-     */
-    TeamAddUpdate: TeamAddUpdate,
-    /**
-     * The CampaignApi service constructor.
-     * @property {module:api/CampaignApi}
-     */
-    CampaignApi: CampaignApi,
+    TrackResponse: TrackResponse,
     /**
      * The ContactApi service constructor.
      * @property {module:api/ContactApi}
      */
-    ContactApi: ContactApi,
-    /**
-     * The LinkApi service constructor.
-     * @property {module:api/LinkApi}
-     */
-    LinkApi: LinkApi,
-    /**
-     * The ListApi service constructor.
-     * @property {module:api/ListApi}
-     */
-    ListApi: ListApi,
-    /**
-     * The SendApi service constructor.
-     * @property {module:api/SendApi}
-     */
-    SendApi: SendApi,
-    /**
-     * The SubscribeApi service constructor.
-     * @property {module:api/SubscribeApi}
-     */
-    SubscribeApi: SubscribeApi,
-    /**
-     * The TagApi service constructor.
-     * @property {module:api/TagApi}
-     */
-    TagApi: TagApi,
-    /**
-     * The TeamApi service constructor.
-     * @property {module:api/TeamApi}
-     */
-    TeamApi: TeamApi,
-    /**
-     * The UnsubscribeApi service constructor.
-     * @property {module:api/UnsubscribeApi}
-     */
-    UnsubscribeApi: UnsubscribeApi
+    ContactApi: ContactApi
   };
 
   return exports;

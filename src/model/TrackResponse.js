@@ -24,83 +24,75 @@
 
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
-    // AMD.
-    define(['expect.js', '../../src/index'], factory);
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
   } else if (typeof module === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    factory(require('expect.js'), require('../../src/index'));
+    module.exports = factory(require('../ApiClient'));
   } else {
     // Browser globals (root is window)
-    factory(root.expect, root.SendXRestApi);
+    if (!root.SendXRestApi) {
+      root.SendXRestApi = {};
+    }
+    root.SendXRestApi.TrackResponse = factory(root.SendXRestApi.ApiClient);
   }
-}(this, function(expect, SendXRestApi) {
+}(this, function(ApiClient) {
   'use strict';
 
-  var instance;
 
-  beforeEach(function() {
-    instance = new SendXRestApi.Contact();
-  });
 
-  var getProperty = function(object, getter, property) {
-    // Use getter method if present; otherwise, get the property directly.
-    if (typeof object[getter] === 'function')
-      return object[getter]();
-    else
-      return object[property];
+
+  /**
+   * The TrackResponse model module.
+   * @module model/TrackResponse
+   * @version v1
+   */
+
+  /**
+   * Constructs a new <code>TrackResponse</code>.
+   * @alias module:model/TrackResponse
+   * @class
+   */
+  var exports = function() {
+    var _this = this;
+
+
+
+  };
+
+  /**
+   * Constructs a <code>TrackResponse</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/TrackResponse} obj Optional instance to populate.
+   * @return {module:model/TrackResponse} The populated <code>TrackResponse</code> instance.
+   */
+  exports.constructFromObject = function(data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('status')) {
+        obj['status'] = ApiClient.convertToType(data['status'], 'String');
+      }
+      if (data.hasOwnProperty('message')) {
+        obj['message'] = ApiClient.convertToType(data['message'], 'String');
+      }
+    }
+    return obj;
   }
 
-  var setProperty = function(object, setter, property, value) {
-    // Use setter method if present; otherwise, set the property directly.
-    if (typeof object[setter] === 'function')
-      object[setter](value);
-    else
-      object[property] = value;
-  }
+  /**
+   * @member {String} status
+   */
+  exports.prototype['status'] = undefined;
+  /**
+   * @member {String} message
+   */
+  exports.prototype['message'] = undefined;
 
-  describe('Contact', function() {
-    it('should create an instance of Contact', function() {
-      // uncomment below and update the code to test Contact
-      //var instane = new SendXRestApi.Contact();
-      //expect(instance).to.be.a(SendXRestApi.Contact);
-    });
 
-    it('should have the property encryptedTeamId (base name: "encryptedTeamId")', function() {
-      // uncomment below and update the code to test the property encryptedTeamId
-      //var instane = new SendXRestApi.Contact();
-      //expect(instance).to.be();
-    });
 
-    it('should have the property firstName (base name: "firstName")', function() {
-      // uncomment below and update the code to test the property firstName
-      //var instane = new SendXRestApi.Contact();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property lastName (base name: "lastName")', function() {
-      // uncomment below and update the code to test the property lastName
-      //var instane = new SendXRestApi.Contact();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property email (base name: "email")', function() {
-      // uncomment below and update the code to test the property email
-      //var instane = new SendXRestApi.Contact();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property company (base name: "company")', function() {
-      // uncomment below and update the code to test the property company
-      //var instane = new SendXRestApi.Contact();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property birthday (base name: "birthday")', function() {
-      // uncomment below and update the code to test the property birthday
-      //var instane = new SendXRestApi.Contact();
-      //expect(instance).to.be();
-    });
-
-  });
-
+  return exports;
 }));
+
+

@@ -39,7 +39,7 @@
   var instance;
 
   beforeEach(function() {
-    instance = new SendXRestApi.Contact();
+    instance = new SendXRestApi.ContactResponse();
   });
 
   var getProperty = function(object, getter, property) {
@@ -58,46 +58,28 @@
       object[property] = value;
   }
 
-  describe('Contact', function() {
-    it('should create an instance of Contact', function() {
-      // uncomment below and update the code to test Contact
-      //var instane = new SendXRestApi.Contact();
-      //expect(instance).to.be.a(SendXRestApi.Contact);
+  describe('ContactResponse', function() {
+    it('should create an instance of ContactResponse', function() {
+      // uncomment below and update the code to test ContactResponse
+      //var instane = new SendXRestApi.ContactResponse();
+      //expect(instance).to.be.a(SendXRestApi.ContactResponse);
     });
 
-    it('should have the property encryptedTeamId (base name: "encryptedTeamId")', function() {
-      // uncomment below and update the code to test the property encryptedTeamId
-      //var instane = new SendXRestApi.Contact();
+    it('should have the property status (base name: "status")', function() {
+      // uncomment below and update the code to test the property status
+      //var instane = new SendXRestApi.ContactResponse();
       //expect(instance).to.be();
     });
 
-    it('should have the property firstName (base name: "firstName")', function() {
-      // uncomment below and update the code to test the property firstName
-      //var instane = new SendXRestApi.Contact();
+    it('should have the property message (base name: "message")', function() {
+      // uncomment below and update the code to test the property message
+      //var instane = new SendXRestApi.ContactResponse();
       //expect(instance).to.be();
     });
 
-    it('should have the property lastName (base name: "lastName")', function() {
-      // uncomment below and update the code to test the property lastName
-      //var instane = new SendXRestApi.Contact();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property email (base name: "email")', function() {
-      // uncomment below and update the code to test the property email
-      //var instane = new SendXRestApi.Contact();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property company (base name: "company")', function() {
-      // uncomment below and update the code to test the property company
-      //var instane = new SendXRestApi.Contact();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property birthday (base name: "birthday")', function() {
-      // uncomment below and update the code to test the property birthday
-      //var instane = new SendXRestApi.Contact();
+    it('should have the property data (base name: "data")', function() {
+      // uncomment below and update the code to test the property data
+      //var instane = new SendXRestApi.ContactResponse();
       //expect(instance).to.be();
     });
 

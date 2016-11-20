@@ -1,12 +1,117 @@
-# SendX API Client Js
+SendX REST API has two methods:
 
-SendXApi - JavaScript client for send_x_api
-SendX is built on the simple tenet that users must have open access to their data. SendX API is the first step in that direction. To cite some examples:   - subscribe / unsubscribe a contact from a list   - Schedule campaign to a segment of users   - Trigger transactional emails   - Get / PUT / POST and DELETE operations on team, campaign, list, contact, report etc. and so on.  As companies grow big, custom use cases around email marketing also crop up. SendX API ensures   that SendX platform is able to satisfy such unforeseen use cases. They may range from building     custom reporting dashboard to tagging contacts with custom attributes or triggering emails based on recommendation algorithm.  We do our best to have all our URLs be [RESTful](http://en.wikipedia.org/wiki/Representational_state_transfer). Every endpoint (URL) may support one of four different http verbs. GET requests fetch information about an object, POST requests create objects, PUT requests update objects, and finally DELETE requests will delete objects.  Also all API calls besides:   - Subscribe / unsubscribe signup form  required **api_key** to be passed as **header**   ### The Envelope Every response is contained by an envelope. That is, each response has a predictable set of keys with which you can expect to interact: ```json {     \"status\": \"200\",      \"message\": \"OK\",     \"data\"\": [        {          ...        },        .        .        .     ] } ```  #### Status  The status key is used to communicate extra information about the response to the developer. If all goes well, you'll only ever see a code key with value 200. However, sometimes things go wrong, and in that case you might see a response like: ```json {     \"status\": \"404\" } ```  #### Data  The data key is the meat of the response. It may be a list containing single object or multiple objects  #### Message  This returns back human readable message. This is specially useful to make sense in case of error scenarios. 
+* [Identify](#identify_api)
+* [Track](#track_api)
+
+## <a name="identify_api"></a> Identify API Method
+
+Identify API Method is used to attach data to a visitor. If a contact is not yet created then we will create the contact. In case contact already exists then we update it.
+
+**Example Request:**
+
+> 
+    {
+      email: "john.doe@gmail.com",  
+      firstName: "John",
+      lastName: "Doe",
+      birthday: "1989-03-03",
+      customFields: { "Designation": "Software Engineer", "Age": "27", "Experience": "5"},  
+      tags: ["Developer", "API Team"],  
+     }
+
+
+Note that tags are an array of strings. In case they don't exist previously then API will create them and associate them with the contact.
+
+Similarly if a custom field doesn't exist then it is first created and then associated with the contact along-with the corresponding value. In case custom field exists already then we simply update the value of it for the aforementioned contact.
+
+We don't delete any of the properties based on identify call. What this means is that if for the same contact you did two API calls like:
+
+
+**API Call A**
+ 
+> 
+    {
+       email: "john.doe@gmail.com", 
+       firstName: "John",
+       birthday: "1989-03-03",
+       customFields: { "Designation": "Software Engineer"},  
+       tags: ["Developer"],  
+    }
+
+
+**API Call B**
+
+> 
+    {  
+      email: "john.doe@gmail.com",  
+      customFields: { "Age": "29"},  
+      tags: ["API Team"],  
+    }
+
+
+The the final contact will have firstName as **John**, birthday as **1989-03-03** present. Also both tags **Developer** and **API Team** shall be present alongwith custom fields **Designation** and **Age**.
+
+
+**Properties:**
+
+* **firstName**: type string
+* **lastName**: type string
+* **email**: type string  
+* **company**: type string  
+* **birthday**: type string with format **YYYY-MM-DD** eg: 2016-11-21  
+* **customFields**: type map[string]string   
+* **tags**: type array of string 
+
+
+**Response:**
+
+> 
+    {
+      "status": "200",
+      "message": "OK",
+      "data": {
+        "encryptedTeamId": "CLdh9Ig5GLIN1u8gTRvoja",
+        "encryptedId": "c9QF63nrBenCaAXe660byz",
+        "tags": [
+          "API Team",
+          "Tech"
+        ],
+        "firstName": "John",
+        "lastName": "Doe",
+        "email": "john.doe@gmail.com",
+        "company": "",
+        "birthday": "1989-03-03",
+        "customFields": {
+          "Age": "29",
+          "Designation": "Software Engineer"
+        }
+      }
+    }
+
+
+## <a name="track_api"></a> Track API Method
+
+
+Track API Method is used to associate **tags** with a contact. You can have automation rules based on tag addition and they will get executed. For eg:
+
+* **On user registration** tag start onboarding drip for him / her.
+* **Account Upgrade** tag start add user to paid user list and start account expansion drip. 
+
+**Response:**
+
+>
+   {
+    "status": "200",
+    "message": "OK",
+    "data": "success"
+   }
+
+## Overview
+
 This SDK is automatically generated by the [Swagger Codegen](https://github.com/swagger-api/swagger-codegen) project:
 
 - API version: v1
 - Package version: v1
-- Build date: 2016-08-15T11:32:04.838Z
 - Build package: class io.swagger.codegen.languages.JavascriptClientCodegen
 
 ## Installation
@@ -21,17 +126,17 @@ please follow the procedure in ["Publishing npm packages"](https://docs.npmjs.co
 Then install it via:
 
 ```shell
-npm install send_x_api --save
+npm install send_x_rest_api --save
 ```
 
 #### git
 #
 If the library is hosted at a git repository, e.g.
-https://github.com/YOUR_USERNAME/send_x_api
+https://github.com/YOUR_USERNAME/send_x_rest_api
 then install it via:
 
 ```shell
-    npm install YOUR_USERNAME/send_x_api --save
+    npm install YOUR_USERNAME/send_x_rest_api --save
 ```
 
 ### For browser
@@ -51,111 +156,43 @@ Then include *bundle.js* in the HTML pages.
 Please follow the [installation](#installation) instruction and execute the following JS code:
 
 ```javascript
-var SendXApi = require('send_x_api');
+var SendXRestApi = require('send_x_rest_api');
 
-var api = new SendXApi.CampaignApi()
+var api = new SendXRestApi.ContactApi()
 
 var apiKey = "apiKey_example"; // {String} 
 
-var campaignId = 789; // {Integer} Campaign ID to delete
+var teamId = "teamId_example"; // {String} 
+
+var body = new SendXRestApi.Contact(); // {Contact} Contact details
 
 
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.campaignCampaignIdDelete(apiKey, campaignId, callback);
+api.contactIdentifyPost(apiKey, teamId, body, callback);
 
 ```
 
 ## Documentation for API Endpoints
 
-All URIs are relative to *http://127.0.0.1:8080/api/v1*
+All URIs are relative to *http://app.sendx.io/api/v1*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*SendXApi.CampaignApi* | [**campaignCampaignIdDelete**](docs/CampaignApi.md#campaignCampaignIdDelete) | **DELETE** /campaign/{campaignId} | Deletes a campaign
-*SendXApi.CampaignApi* | [**campaignCampaignIdGet**](docs/CampaignApi.md#campaignCampaignIdGet) | **GET** /campaign/{campaignId} | Find campaign by ID
-*SendXApi.CampaignApi* | [**campaignCampaignIdPut**](docs/CampaignApi.md#campaignCampaignIdPut) | **PUT** /campaign/{campaignId} | Update a campaign by ID
-*SendXApi.CampaignApi* | [**campaignGet**](docs/CampaignApi.md#campaignGet) | **GET** /campaign | Get information about all campaigns
-*SendXApi.CampaignApi* | [**campaignPost**](docs/CampaignApi.md#campaignPost) | **POST** /campaign | Add a new campaign
-*SendXApi.ContactApi* | [**contactContactIdDelete**](docs/ContactApi.md#contactContactIdDelete) | **DELETE** /contact/{contactId} | Deletes a contact
-*SendXApi.ContactApi* | [**contactContactIdGet**](docs/ContactApi.md#contactContactIdGet) | **GET** /contact/{contactId} | Find contact by ID
-*SendXApi.ContactApi* | [**contactContactIdPut**](docs/ContactApi.md#contactContactIdPut) | **PUT** /contact/{contactId} | Update a contact by ID
-*SendXApi.ContactApi* | [**contactGet**](docs/ContactApi.md#contactGet) | **GET** /contact | Get information about all contacts
-*SendXApi.ContactApi* | [**contactPost**](docs/ContactApi.md#contactPost) | **POST** /contact | Add a new contact
-*SendXApi.LinkApi* | [**linkGet**](docs/LinkApi.md#linkGet) | **GET** /link | Get information about all links
-*SendXApi.LinkApi* | [**linkLinkIdDelete**](docs/LinkApi.md#linkLinkIdDelete) | **DELETE** /link/{linkId} | Deletes a link
-*SendXApi.LinkApi* | [**linkLinkIdGet**](docs/LinkApi.md#linkLinkIdGet) | **GET** /link/{linkId} | Find link by ID
-*SendXApi.LinkApi* | [**linkLinkIdPut**](docs/LinkApi.md#linkLinkIdPut) | **PUT** /link/{linkId} | Update a link by ID
-*SendXApi.LinkApi* | [**linkPost**](docs/LinkApi.md#linkPost) | **POST** /link | Add a new link
-*SendXApi.ListApi* | [**listGet**](docs/ListApi.md#listGet) | **GET** /list | Get information about all lists
-*SendXApi.ListApi* | [**listListIdContactsGet**](docs/ListApi.md#listListIdContactsGet) | **GET** /list/{listId}/contacts | Find contacts belonging to a list
-*SendXApi.ListApi* | [**listListIdDelete**](docs/ListApi.md#listListIdDelete) | **DELETE** /list/{listId} | Deletes a list
-*SendXApi.ListApi* | [**listListIdGet**](docs/ListApi.md#listListIdGet) | **GET** /list/{listId} | Find list by ID
-*SendXApi.ListApi* | [**listListIdPut**](docs/ListApi.md#listListIdPut) | **PUT** /list/{listId} | Update a list by ID
-*SendXApi.ListApi* | [**listPost**](docs/ListApi.md#listPost) | **POST** /list | Add a new list
-*SendXApi.SendApi* | [**sendEmailPost**](docs/SendApi.md#sendEmailPost) | **POST** /send/email | Send transactional email to user
-*SendXApi.SubscribeApi* | [**subscribeEncryptedListIdPost**](docs/SubscribeApi.md#subscribeEncryptedListIdPost) | **POST** /subscribe/{encryptedListId} | Subscribe a new user a list
-*SendXApi.SubscribeApi* | [**subscribeEncryptedListIdPut**](docs/SubscribeApi.md#subscribeEncryptedListIdPut) | **PUT** /subscribe/{encryptedListId} | Subscribe an existing user a list
-*SendXApi.TagApi* | [**tagGet**](docs/TagApi.md#tagGet) | **GET** /tag | Get information about all tags
-*SendXApi.TagApi* | [**tagPost**](docs/TagApi.md#tagPost) | **POST** /tag | Add a new tag
-*SendXApi.TagApi* | [**tagTagIdContactDelete**](docs/TagApi.md#tagTagIdContactDelete) | **DELETE** /tag/{tagId}/contact | Remove a contact from a tag
-*SendXApi.TagApi* | [**tagTagIdContactPost**](docs/TagApi.md#tagTagIdContactPost) | **POST** /tag/{tagId}/contact | Add a contact to a tag
-*SendXApi.TagApi* | [**tagTagIdContactsGet**](docs/TagApi.md#tagTagIdContactsGet) | **GET** /tag/{tagId}/contacts | Find contacts belonging to a tag
-*SendXApi.TagApi* | [**tagTagIdDelete**](docs/TagApi.md#tagTagIdDelete) | **DELETE** /tag/{tagId} | Deletes a tag
-*SendXApi.TagApi* | [**tagTagIdGet**](docs/TagApi.md#tagTagIdGet) | **GET** /tag/{tagId} | Find tag by ID
-*SendXApi.TagApi* | [**tagTagIdPut**](docs/TagApi.md#tagTagIdPut) | **PUT** /tag/{tagId} | Update a tag by ID
-*SendXApi.TeamApi* | [**teamGet**](docs/TeamApi.md#teamGet) | **GET** /team | Get information about all teams
-*SendXApi.TeamApi* | [**teamPost**](docs/TeamApi.md#teamPost) | **POST** /team | Add a new team
-*SendXApi.TeamApi* | [**teamTeamIdCampaignsGet**](docs/TeamApi.md#teamTeamIdCampaignsGet) | **GET** /team/{teamId}/campaigns | Find campaigns of a team by ID
-*SendXApi.TeamApi* | [**teamTeamIdContactsGet**](docs/TeamApi.md#teamTeamIdContactsGet) | **GET** /team/{teamId}/contacts | Find contacts of a team by ID
-*SendXApi.TeamApi* | [**teamTeamIdDelete**](docs/TeamApi.md#teamTeamIdDelete) | **DELETE** /team/{teamId} | Deletes a team
-*SendXApi.TeamApi* | [**teamTeamIdGet**](docs/TeamApi.md#teamTeamIdGet) | **GET** /team/{teamId} | Find team by ID
-*SendXApi.TeamApi* | [**teamTeamIdListsGet**](docs/TeamApi.md#teamTeamIdListsGet) | **GET** /team/{teamId}/lists | Find lists of a team by ID
-*SendXApi.TeamApi* | [**teamTeamIdPut**](docs/TeamApi.md#teamTeamIdPut) | **PUT** /team/{teamId} | Update a team by ID
-*SendXApi.TeamApi* | [**teamTeamIdTagsGet**](docs/TeamApi.md#teamTeamIdTagsGet) | **GET** /team/{teamId}/tags | Find tags of a team by ID
-*SendXApi.UnsubscribeApi* | [**unsubscribeEncryptedListIdPost**](docs/UnsubscribeApi.md#unsubscribeEncryptedListIdPost) | **POST** /unsubscribe/{encryptedListId} | Unsubscribe a user from list based on email id
+*SendXRestApi.ContactApi* | [**contactIdentifyPost**](docs/ContactApi.md#contactIdentifyPost) | **POST** /contact/identify | Identify a contact as user
+*SendXRestApi.ContactApi* | [**contactTrackPost**](docs/ContactApi.md#contactTrackPost) | **POST** /contact/track | Add tracking info using tags to a contact
 
 
 ## Documentation for Models
 
- - [SendXApi.Campaign](docs/Campaign.md)
- - [SendXApi.CampaignAddUpdate](docs/CampaignAddUpdate.md)
- - [SendXApi.Contact](docs/Contact.md)
- - [SendXApi.ContactAddUpdate](docs/ContactAddUpdate.md)
- - [SendXApi.DeepListEmailContact](docs/DeepListEmailContact.md)
- - [SendXApi.DeepTeamEmailContact](docs/DeepTeamEmailContact.md)
- - [SendXApi.EContent](docs/EContent.md)
- - [SendXApi.EMessage](docs/EMessage.md)
- - [SendXApi.Email](docs/Email.md)
- - [SendXApi.InlineResponse200](docs/InlineResponse200.md)
- - [SendXApi.InlineResponse2001](docs/InlineResponse2001.md)
- - [SendXApi.InlineResponse20010](docs/InlineResponse20010.md)
- - [SendXApi.InlineResponse20011](docs/InlineResponse20011.md)
- - [SendXApi.InlineResponse20012](docs/InlineResponse20012.md)
- - [SendXApi.InlineResponse20013](docs/InlineResponse20013.md)
- - [SendXApi.InlineResponse2002](docs/InlineResponse2002.md)
- - [SendXApi.InlineResponse2003](docs/InlineResponse2003.md)
- - [SendXApi.InlineResponse2004](docs/InlineResponse2004.md)
- - [SendXApi.InlineResponse2005](docs/InlineResponse2005.md)
- - [SendXApi.InlineResponse2006](docs/InlineResponse2006.md)
- - [SendXApi.InlineResponse2007](docs/InlineResponse2007.md)
- - [SendXApi.InlineResponse2008](docs/InlineResponse2008.md)
- - [SendXApi.InlineResponse2009](docs/InlineResponse2009.md)
- - [SendXApi.Link](docs/Link.md)
- - [SendXApi.LinkAddUpdate](docs/LinkAddUpdate.md)
- - [SendXApi.List](docs/List.md)
- - [SendXApi.ListAddUpdate](docs/ListAddUpdate.md)
- - [SendXApi.Tag](docs/Tag.md)
- - [SendXApi.TagAddUpdate](docs/TagAddUpdate.md)
- - [SendXApi.TagContact](docs/TagContact.md)
- - [SendXApi.TagContactId](docs/TagContactId.md)
- - [SendXApi.Team](docs/Team.md)
- - [SendXApi.TeamAddUpdate](docs/TeamAddUpdate.md)
+ - [SendXRestApi.Contact](docs/Contact.md)
+ - [SendXRestApi.ContactResponse](docs/ContactResponse.md)
+ - [SendXRestApi.TrackResponse](docs/TrackResponse.md)
 
 
 ## Documentation for Authorization
