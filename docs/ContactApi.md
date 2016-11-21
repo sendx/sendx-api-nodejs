@@ -10,7 +10,7 @@ Method | HTTP request | Description
 
 <a name="contactIdentifyPost"></a>
 # **contactIdentifyPost**
-> ContactResponse contactIdentifyPost(apiKey, teamId, body)
+> ContactResponse contactIdentifyPost(apiKey, teamId, contactDetails)
 
 Identify a contact as user
 
@@ -26,7 +26,7 @@ var apiKey = "apiKey_example"; // String |
 
 var teamId = "teamId_example"; // String | 
 
-var body = new SendXRestApi.Contact(); // Contact | Contact details
+var contactDetails = new SendXRestApi.ContactRequest(); // ContactRequest | Contact details
 
 
 var callback = function(error, data, response) {
@@ -36,7 +36,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-apiInstance.contactIdentifyPost(apiKey, teamId, body, callback);
+apiInstance.contactIdentifyPost(apiKey, teamId, contactDetails, callback);
 ```
 
 ### Parameters
@@ -45,7 +45,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **apiKey** | **String**|  | 
  **teamId** | **String**|  | 
- **body** | [**Contact**](Contact.md)| Contact details | 
+ **contactDetails** | [**ContactRequest**](ContactRequest.md)| Contact details | 
 
 ### Return type
 
@@ -62,7 +62,7 @@ No authorization required
 
 <a name="contactTrackPost"></a>
 # **contactTrackPost**
-> TrackResponse contactTrackPost(apiKey, teamId, contactId, tag)
+> TrackResponse contactTrackPost(apiKey, teamId, email, tag)
 
 Add tracking info using tags to a contact
 
@@ -78,7 +78,7 @@ var apiKey = "apiKey_example"; // String |
 
 var teamId = "teamId_example"; // String | 
 
-var contactId = "contactId_example"; // String | 
+var email = "email_example"; // String | 
 
 var tag = "tag_example"; // String | 
 
@@ -90,7 +90,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-apiInstance.contactTrackPost(apiKey, teamId, contactId, tag, callback);
+apiInstance.contactTrackPost(apiKey, teamId, email, tag, callback);
 ```
 
 ### Parameters
@@ -99,7 +99,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **apiKey** | **String**|  | 
  **teamId** | **String**|  | 
- **contactId** | **String**|  | 
+ **email** | **String**|  | 
  **tag** | **String**|  | 
 
 ### Return type

@@ -34,7 +34,7 @@
     if (!root.SendXRestApi) {
       root.SendXRestApi = {};
     }
-    root.SendXRestApi.Contact = factory(root.SendXRestApi.ApiClient);
+    root.SendXRestApi.ContactRequest = factory(root.SendXRestApi.ApiClient);
   }
 }(this, function(ApiClient) {
   'use strict';
@@ -43,24 +43,23 @@
 
 
   /**
-   * The Contact model module.
-   * @module model/Contact
+   * The ContactRequest model module.
+   * @module model/ContactRequest
    * @version v1
    */
 
   /**
-   * Constructs a new <code>Contact</code>.
-   * @alias module:model/Contact
+   * Constructs a new <code>ContactRequest</code>.
+   * @alias module:model/ContactRequest
    * @class
+   * @param email {String} 
    */
-  var exports = function() {
+  var exports = function(email) {
     var _this = this;
 
 
 
-
-
-
+    _this['email'] = email;
 
 
 
@@ -68,22 +67,16 @@
   };
 
   /**
-   * Constructs a <code>Contact</code> from a plain JavaScript object, optionally creating a new instance.
+   * Constructs a <code>ContactRequest</code> from a plain JavaScript object, optionally creating a new instance.
    * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
    * @param {Object} data The plain JavaScript object bearing properties of interest.
-   * @param {module:model/Contact} obj Optional instance to populate.
-   * @return {module:model/Contact} The populated <code>Contact</code> instance.
+   * @param {module:model/ContactRequest} obj Optional instance to populate.
+   * @return {module:model/ContactRequest} The populated <code>ContactRequest</code> instance.
    */
   exports.constructFromObject = function(data, obj) {
     if (data) {
       obj = obj || new exports();
 
-      if (data.hasOwnProperty('encryptedTeamId')) {
-        obj['encryptedTeamId'] = ApiClient.convertToType(data['encryptedTeamId'], 'String');
-      }
-      if (data.hasOwnProperty('encryptedId')) {
-        obj['encryptedId'] = ApiClient.convertToType(data['encryptedId'], 'String');
-      }
       if (data.hasOwnProperty('firstName')) {
         obj['firstName'] = ApiClient.convertToType(data['firstName'], 'String');
       }
@@ -109,14 +102,6 @@
     return obj;
   }
 
-  /**
-   * @member {String} encryptedTeamId
-   */
-  exports.prototype['encryptedTeamId'] = undefined;
-  /**
-   * @member {String} encryptedId
-   */
-  exports.prototype['encryptedId'] = undefined;
   /**
    * @member {String} firstName
    */
