@@ -1,5 +1,7 @@
 # SendX NodeJS Client 
 
+**NOTE:** All API calls contain 2 parameters - 'api_key' and 'team_id'. These can be inferred from your settings page 'https://app.sendx.io/setting' under the sections 'Api Key' and 'Team Id' respectively.
+
 SendX REST API has two methods:
 
 * [Identify](#identify_api)
