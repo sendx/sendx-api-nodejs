@@ -62,7 +62,7 @@ No authorization required
 
 <a name="contactTrackPost"></a>
 # **contactTrackPost**
-> TrackResponse contactTrackPost(apiKey, teamId, email, tag)
+> TrackResponse contactTrackPost(apiKey, teamId, email, trackDetails)
 
 Add tracking info using tags to a contact
 
@@ -80,7 +80,7 @@ var teamId = "teamId_example"; // String |
 
 var email = "email_example"; // String | 
 
-var tag = "tag_example"; // String | 
+var trackDetails = new SendXRestApi.TrackRequest(); // TrackRequest | Track Details
 
 
 var callback = function(error, data, response) {
@@ -90,7 +90,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-apiInstance.contactTrackPost(apiKey, teamId, email, tag, callback);
+apiInstance.contactTrackPost(apiKey, teamId, email, trackDetails, callback);
 ```
 
 ### Parameters
@@ -100,7 +100,7 @@ Name | Type | Description  | Notes
  **apiKey** | **String**|  | 
  **teamId** | **String**|  | 
  **email** | **String**|  | 
- **tag** | **String**|  | 
+ **trackDetails** | [**TrackRequest**](TrackRequest.md)| Track Details | 
 
 ### Return type
 

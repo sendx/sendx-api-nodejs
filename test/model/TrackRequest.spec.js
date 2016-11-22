@@ -24,131 +24,59 @@
 
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
-    // AMD. Register as an anonymous module.
-    define(['ApiClient'], factory);
+    // AMD.
+    define(['expect.js', '../../src/index'], factory);
   } else if (typeof module === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(require('../ApiClient'));
+    factory(require('expect.js'), require('../../src/index'));
   } else {
     // Browser globals (root is window)
-    if (!root.SendXRestApi) {
-      root.SendXRestApi = {};
-    }
-    root.SendXRestApi.Contact = factory(root.SendXRestApi.ApiClient);
+    factory(root.expect, root.SendXRestApi);
   }
-}(this, function(ApiClient) {
+}(this, function(expect, SendXRestApi) {
   'use strict';
 
+  var instance;
 
+  beforeEach(function() {
+    instance = new SendXRestApi.TrackRequest();
+  });
 
-
-  /**
-   * The Contact model module.
-   * @module model/Contact
-   * @version v1
-   */
-
-  /**
-   * Constructs a new <code>Contact</code>.
-   * @alias module:model/Contact
-   * @class
-   */
-  var exports = function() {
-    var _this = this;
-
-
-
-
-
-
-
-
-
-
-  };
-
-  /**
-   * Constructs a <code>Contact</code> from a plain JavaScript object, optionally creating a new instance.
-   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
-   * @param {Object} data The plain JavaScript object bearing properties of interest.
-   * @param {module:model/Contact} obj Optional instance to populate.
-   * @return {module:model/Contact} The populated <code>Contact</code> instance.
-   */
-  exports.constructFromObject = function(data, obj) {
-    if (data) {
-      obj = obj || new exports();
-
-      if (data.hasOwnProperty('encryptedTeamId')) {
-        obj['encryptedTeamId'] = ApiClient.convertToType(data['encryptedTeamId'], 'String');
-      }
-      if (data.hasOwnProperty('encryptedId')) {
-        obj['encryptedId'] = ApiClient.convertToType(data['encryptedId'], 'String');
-      }
-      if (data.hasOwnProperty('firstName')) {
-        obj['firstName'] = ApiClient.convertToType(data['firstName'], 'String');
-      }
-      if (data.hasOwnProperty('lastName')) {
-        obj['lastName'] = ApiClient.convertToType(data['lastName'], 'String');
-      }
-      if (data.hasOwnProperty('email')) {
-        obj['email'] = ApiClient.convertToType(data['email'], 'String');
-      }
-      if (data.hasOwnProperty('company')) {
-        obj['company'] = ApiClient.convertToType(data['company'], 'String');
-      }
-      if (data.hasOwnProperty('birthday')) {
-        obj['birthday'] = ApiClient.convertToType(data['birthday'], 'String');
-      }
-      if (data.hasOwnProperty('tags')) {
-        obj['tags'] = ApiClient.convertToType(data['tags'], ['String']);
-      }
-      if (data.hasOwnProperty('customFields')) {
-        obj['customFields'] = ApiClient.convertToType(data['customFields'], {'String': 'String'});
-      }
-    }
-    return obj;
+  var getProperty = function(object, getter, property) {
+    // Use getter method if present; otherwise, get the property directly.
+    if (typeof object[getter] === 'function')
+      return object[getter]();
+    else
+      return object[property];
   }
 
-  /**
-   * @member {String} encryptedTeamId
-   */
-  exports.prototype['encryptedTeamId'] = undefined;
-  /**
-   * @member {String} encryptedId
-   */
-  exports.prototype['encryptedId'] = undefined;
-  /**
-   * @member {String} firstName
-   */
-  exports.prototype['firstName'] = undefined;
-  /**
-   * @member {String} lastName
-   */
-  exports.prototype['lastName'] = undefined;
-  /**
-   * @member {String} email
-   */
-  exports.prototype['email'] = undefined;
-  /**
-   * @member {String} company
-   */
-  exports.prototype['company'] = undefined;
-  /**
-   * @member {String} birthday
-   */
-  exports.prototype['birthday'] = undefined;
-  /**
-   * @member {Array.<String>} tags
-   */
-  exports.prototype['tags'] = undefined;
-  /**
-   * @member {Object.<String, String>} customFields
-   */
-  exports.prototype['customFields'] = undefined;
+  var setProperty = function(object, setter, property, value) {
+    // Use setter method if present; otherwise, set the property directly.
+    if (typeof object[setter] === 'function')
+      object[setter](value);
+    else
+      object[property] = value;
+  }
 
+  describe('TrackRequest', function() {
+    it('should create an instance of TrackRequest', function() {
+      // uncomment below and update the code to test TrackRequest
+      //var instane = new SendXRestApi.TrackRequest();
+      //expect(instance).to.be.a(SendXRestApi.TrackRequest);
+    });
 
+    it('should have the property addTags (base name: "addTags")', function() {
+      // uncomment below and update the code to test the property addTags
+      //var instane = new SendXRestApi.TrackRequest();
+      //expect(instance).to.be();
+    });
 
-  return exports;
+    it('should have the property removeTags (base name: "removeTags")', function() {
+      // uncomment below and update the code to test the property removeTags
+      //var instane = new SendXRestApi.TrackRequest();
+      //expect(instance).to.be();
+    });
+
+  });
+
 }));
-
-

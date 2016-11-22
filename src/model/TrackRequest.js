@@ -25,162 +25,74 @@
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['ApiClient', 'model/ContactRequest', 'model/ContactResponse', 'model/TrackRequest', 'model/TrackResponse'], factory);
+    define(['ApiClient'], factory);
   } else if (typeof module === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(require('../ApiClient'), require('../model/ContactRequest'), require('../model/ContactResponse'), require('../model/TrackRequest'), require('../model/TrackResponse'));
+    module.exports = factory(require('../ApiClient'));
   } else {
     // Browser globals (root is window)
     if (!root.SendXRestApi) {
       root.SendXRestApi = {};
     }
-    root.SendXRestApi.ContactApi = factory(root.SendXRestApi.ApiClient, root.SendXRestApi.ContactRequest, root.SendXRestApi.ContactResponse, root.SendXRestApi.TrackRequest, root.SendXRestApi.TrackResponse);
+    root.SendXRestApi.TrackRequest = factory(root.SendXRestApi.ApiClient);
   }
-}(this, function(ApiClient, ContactRequest, ContactResponse, TrackRequest, TrackResponse) {
+}(this, function(ApiClient) {
   'use strict';
 
+
+
+
   /**
-   * Contact service.
-   * @module api/ContactApi
+   * The TrackRequest model module.
+   * @module model/TrackRequest
    * @version v1
    */
 
   /**
-   * Constructs a new ContactApi. 
-   * @alias module:api/ContactApi
+   * Constructs a new <code>TrackRequest</code>.
+   * @alias module:model/TrackRequest
    * @class
-   * @param {module:ApiClient} apiClient Optional API client implementation to use,
-   * default to {@link module:ApiClient#instance} if unspecified.
    */
-  var exports = function(apiClient) {
-    this.apiClient = apiClient || ApiClient.instance;
+  var exports = function() {
+    var _this = this;
 
 
-    /**
-     * Callback function to receive the result of the contactIdentifyPost operation.
-     * @callback module:api/ContactApi~contactIdentifyPostCallback
-     * @param {String} error Error message, if any.
-     * @param {module:model/ContactResponse} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
-     */
 
-    /**
-     * Identify a contact as user
-     * 
-     * @param {String} apiKey 
-     * @param {String} teamId 
-     * @param {module:model/ContactRequest} contactDetails Contact details
-     * @param {module:api/ContactApi~contactIdentifyPostCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/ContactResponse}
-     */
-    this.contactIdentifyPost = function(apiKey, teamId, contactDetails, callback) {
-      var postBody = contactDetails;
-
-      // verify the required parameter 'apiKey' is set
-      if (apiKey == undefined || apiKey == null) {
-        throw new Error("Missing the required parameter 'apiKey' when calling contactIdentifyPost");
-      }
-
-      // verify the required parameter 'teamId' is set
-      if (teamId == undefined || teamId == null) {
-        throw new Error("Missing the required parameter 'teamId' when calling contactIdentifyPost");
-      }
-
-      // verify the required parameter 'contactDetails' is set
-      if (contactDetails == undefined || contactDetails == null) {
-        throw new Error("Missing the required parameter 'contactDetails' when calling contactIdentifyPost");
-      }
-
-
-      var pathParams = {
-      };
-      var queryParams = {
-        'team_id': teamId
-      };
-      var headerParams = {
-        'api_key': apiKey
-      };
-      var formParams = {
-      };
-
-      var authNames = [];
-      var contentTypes = ['application/json'];
-      var accepts = ['application/json'];
-      var returnType = ContactResponse;
-
-      return this.apiClient.callApi(
-        '/contact/identify', 'POST',
-        pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, callback
-      );
-    }
-
-    /**
-     * Callback function to receive the result of the contactTrackPost operation.
-     * @callback module:api/ContactApi~contactTrackPostCallback
-     * @param {String} error Error message, if any.
-     * @param {module:model/TrackResponse} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
-     */
-
-    /**
-     * Add tracking info using tags to a contact
-     * 
-     * @param {String} apiKey 
-     * @param {String} teamId 
-     * @param {String} email 
-     * @param {module:model/TrackRequest} trackDetails Track Details
-     * @param {module:api/ContactApi~contactTrackPostCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/TrackResponse}
-     */
-    this.contactTrackPost = function(apiKey, teamId, email, trackDetails, callback) {
-      var postBody = trackDetails;
-
-      // verify the required parameter 'apiKey' is set
-      if (apiKey == undefined || apiKey == null) {
-        throw new Error("Missing the required parameter 'apiKey' when calling contactTrackPost");
-      }
-
-      // verify the required parameter 'teamId' is set
-      if (teamId == undefined || teamId == null) {
-        throw new Error("Missing the required parameter 'teamId' when calling contactTrackPost");
-      }
-
-      // verify the required parameter 'email' is set
-      if (email == undefined || email == null) {
-        throw new Error("Missing the required parameter 'email' when calling contactTrackPost");
-      }
-
-      // verify the required parameter 'trackDetails' is set
-      if (trackDetails == undefined || trackDetails == null) {
-        throw new Error("Missing the required parameter 'trackDetails' when calling contactTrackPost");
-      }
-
-
-      var pathParams = {
-      };
-      var queryParams = {
-        'team_id': teamId,
-        'email': email
-      };
-      var headerParams = {
-        'api_key': apiKey
-      };
-      var formParams = {
-      };
-
-      var authNames = [];
-      var contentTypes = ['application/json'];
-      var accepts = ['application/json'];
-      var returnType = TrackResponse;
-
-      return this.apiClient.callApi(
-        '/contact/track', 'POST',
-        pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, callback
-      );
-    }
   };
+
+  /**
+   * Constructs a <code>TrackRequest</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/TrackRequest} obj Optional instance to populate.
+   * @return {module:model/TrackRequest} The populated <code>TrackRequest</code> instance.
+   */
+  exports.constructFromObject = function(data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('addTags')) {
+        obj['addTags'] = ApiClient.convertToType(data['addTags'], ['String']);
+      }
+      if (data.hasOwnProperty('removeTags')) {
+        obj['removeTags'] = ApiClient.convertToType(data['removeTags'], ['String']);
+      }
+    }
+    return obj;
+  }
+
+  /**
+   * @member {Array.<String>} addTags
+   */
+  exports.prototype['addTags'] = undefined;
+  /**
+   * @member {Array.<String>} removeTags
+   */
+  exports.prototype['removeTags'] = undefined;
+
+
 
   return exports;
 }));
+
+
