@@ -55,9 +55,9 @@
     /**
      * The base URL against which to resolve every API call's (relative) path.
      * @type {String}
-     * @default http://app.sendx.io/api/v1
+     * @default https://app.sendx.io/api/v1
      */
-    this.basePath = 'http://app.sendx.io/api/v1'.replace(/\/+$/, '');
+    this.basePath = 'https://app.sendx.io/api/v1'.replace(/\/+$/, '');
 
     /**
      * The authentication methods to be included for all API calls.
